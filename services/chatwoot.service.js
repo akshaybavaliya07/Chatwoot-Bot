@@ -46,38 +46,3 @@ export async function sendMessage(conversationId, content, buttons = []) {
     console.error("Chatwoot Send Error:", err.response?.data || err.message);
   }
 }
-
-export async function resolveConversation({
-  conversationId,
-  inboxIdentifier,
-  contactIdentifier
-}) {
-  if (!CHATWOOT_TOKEN) {
-    console.warn("resolveConversation skipped: missing CHATWOOT_TOKEN");
-    return;
-  }
-
-  if (!conversationId || !inboxIdentifier || !contactIdentifier) {
-    console.warn(
-      "resolveConversation skipped: missing conversationId, inboxIdentifier or contactIdentifier",
-      { conversationId, inboxIdentifier, contactIdentifier }
-    );
-    return;
-  }
-
-  const url = `https://app.chatwoot.com/public/api/v1/inboxes/${inboxIdentifier}/contacts/${contactIdentifier}/conversations/${conversationId}/toggle_status`;
-
-  try {
-    await axios.post(
-      url,
-      { status: "resolved" },
-      { headers: { api_access_token: CHATWOOT_TOKEN } }
-    );
-  } catch (err) {
-    console.error(
-      "Chatwoot Resolve Error:",
-      err.response?.data || err.message,
-      { url }
-    );
-  }
-}
