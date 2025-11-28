@@ -12,10 +12,10 @@ export async function sendMessage(conversationId, content, buttons = []) {
   }
 
   const ACCOUNT_ID = process.env.ACCOUNT_ID;
-  const CHATWOOT_TOKEN = process.env.CHATWOOT_TOKEN;
+  const CHATWOOT_BOT_TOKEN = process.env.CHATWOOT_BOT_TOKEN;
 
-  if (!CHATWOOT_TOKEN || !ACCOUNT_ID) {
-    console.warn("sendMessage skipped: missing CHATWOOT_TOKEN or ACCOUNT_ID");
+  if (!CHATWOOT_BOT_TOKEN || !ACCOUNT_ID) {
+    console.warn("sendMessage skipped: missing CHATWOOT_BOT_TOKEN or ACCOUNT_ID");
     return;
   }
 
@@ -40,7 +40,7 @@ export async function sendMessage(conversationId, content, buttons = []) {
     await axios.post(
       `https://app.chatwoot.com/api/v1/accounts/${ACCOUNT_ID}/conversations/${conversationId}/messages`,
       payload,
-      { headers: { api_access_token: CHATWOOT_TOKEN } }
+      { headers: { api_access_token: CHATWOOT_BOT_TOKEN }}
     );
   } catch (err) {
     console.error("Chatwoot Send Error:", err.response?.data || err.message);

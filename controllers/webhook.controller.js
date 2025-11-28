@@ -41,6 +41,17 @@ export async function handleWebhook(req, res) {
     return;
   }
 
+  // ✅ added code: detect assignment from conversation_updated also
+  if (
+    event === "conversation_updated" &&
+    conversation?.meta?.assignee &&
+    conversationId
+  ) {
+    console.log("Agent assigned via conversation_updated → disabling bot", conversationId);
+    disableConversation(conversationId);
+    return;
+  }
+
   // ✅ Human agent sends any message → permanently disable bot
   if (
     messageType === "outgoing" &&
@@ -60,8 +71,7 @@ export async function handleWebhook(req, res) {
   const hasSubmittedValue = Boolean(contentAttributes?.submitted_values?.length);
   const isUserMessage =
     messageType === "incoming" || // normal text
-    hasSubmittedValue; // ✅ BUTTON CLICKS COME HERE (message_updated)
-  // ACCEPT BOTH message_created AND message_updated FOR BUTTONS
+    hasSubmittedValue; // BUTTON CLICKS COME HERE (message_updated)
   if (!isUserMessage) return;
 
   await processBotMessage(body);

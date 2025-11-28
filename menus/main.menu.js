@@ -1,10 +1,12 @@
 export const MAIN_MENU = {
-  text: "👋 Welcome to Driansh Softtech Pvt Ltd. Where should we start?",
-  buttons: [
-    { title: "Explore Products", payload: "1" },
-    { title: "Talk to Support", payload: "2" },
-    { title: "Book a Demo", payload: "3" }
-  ]
+  text: `👋 Welcome to Driansh Softtech Pvt. Ltd.
+    I’m your virtual assistant — here to help you get what you need faster.
+    What brings you here today?`,
+    buttons: [
+      { title: "Explore Products", payload: "1" },
+      { title: "Talk to Support", payload: "2" },
+      { title: "Book a Demo/Consultants", payload: "3" }
+    ]
 };
 
 export const PRODUCTS_MENU = {

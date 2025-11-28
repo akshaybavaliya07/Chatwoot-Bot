@@ -47,8 +47,13 @@ export function setCompleted(conversationId) {
 export function disableConversation(conversationId) {
   const key = normalizeId(conversationId);
   if (!key) return;
-  // Clear other state data and mark disabled
-  conversationStates.set(key, { step: "disabled", locked: true });
+
+  // added code: hard lock + disabled flag for reliable blocking
+  conversationStates.set(key, {
+    step: "disabled",
+    locked: true,
+    disabled: true
+  });
 }
 
 /**
@@ -57,5 +62,7 @@ export function disableConversation(conversationId) {
 export function isConversationDisabled(conversationId) {
   const key = normalizeId(conversationId);
   const state = conversationStates.get(key);
+
+  // added code: support both locked and disabled flags
   return state?.step === "disabled" && state?.locked === true;
 }

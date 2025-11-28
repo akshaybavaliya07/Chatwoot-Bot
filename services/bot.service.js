@@ -1,4 +1,10 @@
-import { getState, resetState, setCompleted, disableConversation, isConversationDisabled } from "../state/conversation.state.js";
+import {
+  getState,
+  resetState,
+  setCompleted,
+  disableConversation,
+  isConversationDisabled
+} from "../state/conversation.state.js";
 import { sendMessage } from "./chatwoot.service.js";
 import {
   MAIN_MENU,
@@ -58,8 +64,11 @@ export async function processBotMessage(body) {
     return;
   }
 
-  // Short-circuit: if bot is disabled due to agent assignment, ignore everything
-  if (isConversationDisabled(conversationId)) return;
+  // added code: HARD STOP if agent has taken over
+  if (isConversationDisabled(conversationId)) {
+    console.log("Bot blocked: agent is active on conversation", conversationId);
+    return;
+  }
 
   // If webhook indicates an agent sent an outgoing message, ensure bot is disabled
   // (controller already handles most cases, but keep a safety net here)
@@ -73,7 +82,9 @@ export async function processBotMessage(body) {
   const state = getState(conversationId);
 
   // CONTACT KEYWORD WORKS FROM ANYWHERE except if conversation is disabled
-  if (!isConversationDisabled(conversationId) && message === "contact") {
+  if (message === "contact") {
+    if (isConversationDisabled(conversationId)) return; // added code: strict agent lock
+
     await sendMessage(
       conversationId,
       withMenuHint(
@@ -84,28 +95,16 @@ export async function processBotMessage(body) {
     return;
   }
 
-  // If conversation is disabled or completed, ignore messages except explicit "menu"
-  if (state.disabled) {
-    // allow explicit "menu" to bring the bot back for this conversation
-    if (message === "menu") {
-      resetState(conversationId);
-      await sendMessage(conversationId, MAIN_MENU.text, MAIN_MENU.buttons);
-    }
-    return;
-  }
-
   if (state.step === "completed") {
-    // allow user to explicitly reopen bot with "menu"
-    if (message === "menu") {
-      resetState(conversationId);
-      await sendMessage(conversationId, MAIN_MENU.text, MAIN_MENU.buttons);
-    }
+      if (message === "menu") {
+        resetState(conversationId);
+        await sendMessage(conversationId, MAIN_MENU.text, MAIN_MENU.buttons);
+      }
     return;
   }
 
   // EXIT / RESET (user explicitly wants menu/main)
-  if (message === "exit") {
-    // keep exit behaviour: reset to main and show menu
+  if (message === "exit" || message === "menu") {
     resetState(conversationId);
     await sendMessage(conversationId, MAIN_MENU.text, MAIN_MENU.buttons);
     return;
@@ -124,7 +123,13 @@ export async function processBotMessage(body) {
     if (choice === "2") {
       await sendMessage(
         conversationId,
-        withMenuHint("Support team will contact you shortly.")
+        withMenuHint(
+          "💬 Our support team is here to assist you!\n\n" +
+          "📧 Email: support@driansh.com\n" +
+          "📞 Phone: +91-7028764776\n" +
+          "🌐 Contact Page: https://www.driansh.com/contact-us\n\n" +
+          "Please reach out and we will get back to you as soon as possible."
+        )
       );
       setCompleted(conversationId);
       return;
@@ -133,7 +138,12 @@ export async function processBotMessage(body) {
     if (choice === "3") {
       await sendMessage(
         conversationId,
-        withMenuHint("Book a demo: https://www.driansh.com/contact-us")
+        withMenuHint(
+          "🚀 Interested in seeing our platform in action?\n\n" +
+          "You can book a personalized demo with our team here:\n" +
+          "🌐 Book Demo: https://www.driansh.com/contact-us\n\n" +
+          "We’ll guide you through all features and answer your questions!"
+        )
       );
       setCompleted(conversationId);
       return;
@@ -161,7 +171,9 @@ export async function processBotMessage(body) {
 
     await sendMessage(
       conversationId,
-      withMenuHint(`✅ *${product.name}*\n${product.desc}\nMore info: ${product.link}\n`)
+      withMenuHint(
+        `✅ *${product.name}*\n${product.desc}\nMore info: ${product.link}\n`
+      )
     );
 
     setCompleted(conversationId);
