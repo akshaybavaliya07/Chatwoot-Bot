@@ -1,9 +1,12 @@
-
 import express from 'express';
+import dotenv from "dotenv";
+dotenv.config();
 import webhookRoutes from "./routes/webhook.routes.js";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
+
+console.log(process.env.PORT, process.env.ACCOUNT_ID, process.env.CHATWOOT_TOKEN);
 
 app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ extended: true }));

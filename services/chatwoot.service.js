@@ -1,8 +1,5 @@
 import axios from "axios";
 
-const ACCOUNT_ID = 141109;
-const CHATWOOT_TOKEN = "syt2TK6pRifiQemYXwm95RNR";
-
 export async function sendMessage(conversationId, content, buttons = []) {
   if (!conversationId) {
     console.warn("sendMessage skipped: missing conversationId");
@@ -13,6 +10,9 @@ export async function sendMessage(conversationId, content, buttons = []) {
     console.warn("sendMessage skipped: missing content");
     return;
   }
+
+  const ACCOUNT_ID = process.env.ACCOUNT_ID;
+  const CHATWOOT_TOKEN = process.env.CHATWOOT_TOKEN;
 
   if (!CHATWOOT_TOKEN || !ACCOUNT_ID) {
     console.warn("sendMessage skipped: missing CHATWOOT_TOKEN or ACCOUNT_ID");

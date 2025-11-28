@@ -1,20 +1,20 @@
 export const MAIN_MENU = {
   text: "👋 Welcome to Driansh Softtech Pvt Ltd. Where should we start?",
   buttons: [
-    { type: "reply", title: "Explore Products", payload: "1" },
-    { type: "reply", title: "Talk to Support", payload: "2" },
-    { type: "reply", title: "Book a Demo", payload: "3" }
+    { title: "Explore Products", payload: "1" },
+    { title: "Talk to Support", payload: "2" },
+    { title: "Book a Demo", payload: "3" }
   ]
 };
 
 export const PRODUCTS_MENU = {
   text: "Great! Pick the platform you want to learn about:",
   buttons: [
-    { type: "reply", title: "Call Center Solution", payload: "1" },
-    { type: "reply", title: "PBX System", payload: "2" },
-    { type: "reply", title: "Voice Broadcasting", payload: "3" },
-    { type: "reply", title: "SMS Broadcasting", payload: "4" },
-    { type: "reply", title: "Softswitch", payload: "5" }
+    { title: "Call Center Solution", payload: "1" },
+    { title: "PBX System", payload: "2" },
+    { title: "Voice Broadcasting", payload: "3" },
+    { title: "SMS Broadcasting", payload: "4" },
+    { title: "Softswitch", payload: "5" }
   ]
 };
 
